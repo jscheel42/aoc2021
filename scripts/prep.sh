@@ -6,3 +6,5 @@ yay -S nodejs-lts-fermium
 yay -S npm
 sudo npm install typescript -g
 sudo npm install ts-node -g
+
+npm install --save-dev @types/node
