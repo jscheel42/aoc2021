@@ -17,6 +17,8 @@ Object.entries(inputData).forEach(
     }
 );
 
+// PART 1
+
 let highCountResult: Array<number> = [];
 let lowCountResult: Array<number> = [];
 
@@ -55,10 +57,105 @@ let lowCountBinaryString: string = lowCountResult.join("");
 let gammaRate: number = parseInt(highCountBinaryString, 2);
 let epsilonRate: number = parseInt(lowCountBinaryString, 2);
 
-let total: number = gammaRate * epsilonRate;
+let totalPart1: number = gammaRate * epsilonRate;
 
 console.log(`highCountBinaryString: ${highCountBinaryString}
 gammaRate: ${gammaRate}
 lowCountBinaryString: ${lowCountBinaryString}
-epsilonRate: ${epsilonRate}
-total: ${total}`)
+epsilonRate: ${epsilonRate}That's the right answer! You are one gold star closer to finding the sleigh keys.
+
+
+totalPart1: ${totalPart1}`)
+
+
+// PART 2
+
+let oxygenArray: Array<Array<number>> = parsedData;
+let oxygenIndex: number = 0;
+while(oxygenArray.length != 1) {
+    let zeroCount = 0;
+    let oneCount = 0;
+    
+    for (let j = 0; j < oxygenArray.length ; j++) {
+        switch(oxygenArray[j][oxygenIndex]) {
+            case 0:
+                zeroCount++;
+                break;
+            case 1:
+                oneCount++;
+                break;
+            default:
+                console.log(`Something has gone wrong on oxygenIndex=${oxygenIndex} j=${j}`);
+                break;
+        }
+    }
+
+    let moreCommonDigit: number;
+    if (zeroCount > oneCount) {
+        moreCommonDigit = 0;
+    } else {
+        moreCommonDigit = 1;
+    }
+
+    let tmpOxygenArray: Array<Array<number>> = [];
+    for (let j = 0; j < oxygenArray.length ; j++) {
+        if (oxygenArray[j][oxygenIndex] == moreCommonDigit) {
+            tmpOxygenArray.push(oxygenArray[j])
+        }
+    }
+
+    oxygenArray = tmpOxygenArray;
+    oxygenIndex++;
+}
+
+let co2Array: Array<Array<number>> = parsedData;
+let co2Index: number = 0;
+while(co2Array.length != 1) {
+    let zeroCount = 0;
+    let oneCount = 0;
+    
+    for (let j = 0; j < co2Array.length ; j++) {
+        switch(co2Array[j][co2Index]) {
+            case 0:
+                zeroCount++;
+                break;
+            case 1:
+                oneCount++;
+                break;
+            default:
+                console.log(`Something has gone wrong on co2Index=${co2Index} j=${j}`);
+                break;
+        }
+    }
+
+    let lessCommonDigit: number;
+    if (zeroCount <= oneCount) {
+        lessCommonDigit = 0;
+    } else {
+        lessCommonDigit = 1;
+    }
+
+    let tmpCo2Array: Array<Array<number>> = [];
+    for (let j = 0; j < co2Array.length ; j++) {
+        if (co2Array[j][co2Index] == lessCommonDigit) {
+            tmpCo2Array.push(co2Array[j])
+        }
+    }
+
+    co2Array = tmpCo2Array;
+    co2Index++;
+}
+
+let oxygenFinalStringBinary: string = oxygenArray[0].join("")
+let oxygenGeneratorRating: number = parseInt(oxygenFinalStringBinary, 2);
+
+let co2FinalStringBinary: string = co2Array[0].join("")
+let co2ScrubberRating: number = parseInt(co2FinalStringBinary, 2);
+
+let totalPart2: number = oxygenGeneratorRating * co2ScrubberRating
+
+console.log(`oxygenFinalStringBinary: ${oxygenFinalStringBinary}
+oxygenGeneratorRating: ${oxygenGeneratorRating}
+co2FinalStringBinary: ${co2FinalStringBinary}
+co2ScrubberRating: ${co2ScrubberRating}
+totalPart2: ${totalPart2}`)
