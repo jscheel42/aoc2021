@@ -62,10 +62,10 @@ let totalPart1: number = gammaRate * epsilonRate;
 console.log(`highCountBinaryString: ${highCountBinaryString}
 gammaRate: ${gammaRate}
 lowCountBinaryString: ${lowCountBinaryString}
-epsilonRate: ${epsilonRate}That's the right answer! You are one gold star closer to finding the sleigh keys.
+epsilonRate: ${epsilonRate}
+totalPart1: ${totalPart1}
 
-
-totalPart1: ${totalPart1}`)
+`)
 
 
 // PART 2
@@ -75,6 +75,7 @@ let oxygenIndex: number = 0;
 while(oxygenArray.length != 1) {
     let zeroCount = 0;
     let oneCount = 0;
+    let moreCommonDigit: number = -1; // If this isn't assigned a value, runtime throws `Variable 'moreCommonDigit' is used before being assigned.`
     
     for (let j = 0; j < oxygenArray.length ; j++) {
         switch(oxygenArray[j][oxygenIndex]) {
@@ -88,13 +89,14 @@ while(oxygenArray.length != 1) {
                 console.log(`Something has gone wrong on oxygenIndex=${oxygenIndex} j=${j}`);
                 break;
         }
-    }
-
-    let moreCommonDigit: number;
-    if (zeroCount > oneCount) {
-        moreCommonDigit = 0;
-    } else {
-        moreCommonDigit = 1;
+        
+        if (zeroCount > (oxygenArray.length / 2)) {
+            moreCommonDigit = 0;
+            break;
+        } else if (oneCount >= (oxygenArray.length / 2)) {
+            moreCommonDigit = 1;
+            break;
+        }
     }
 
     let tmpOxygenArray: Array<Array<number>> = [];
@@ -113,6 +115,7 @@ let co2Index: number = 0;
 while(co2Array.length != 1) {
     let zeroCount = 0;
     let oneCount = 0;
+    let lessCommonDigit: number = -1;
     
     for (let j = 0; j < co2Array.length ; j++) {
         switch(co2Array[j][co2Index]) {
@@ -126,13 +129,14 @@ while(co2Array.length != 1) {
                 console.log(`Something has gone wrong on co2Index=${co2Index} j=${j}`);
                 break;
         }
-    }
 
-    let lessCommonDigit: number;
-    if (zeroCount <= oneCount) {
-        lessCommonDigit = 0;
-    } else {
-        lessCommonDigit = 1;
+        if (zeroCount > (co2Array.length / 2)) {
+            lessCommonDigit = 1;
+            break;
+        } else if (oneCount >= (co2Array.length / 2)) {
+            lessCommonDigit = 0;
+            break;
+        }
     }
 
     let tmpCo2Array: Array<Array<number>> = [];
