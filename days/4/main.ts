@@ -7,7 +7,7 @@ const inputData: Array<string> = readFileSync(
                                  ).split("\n");
 
 // Separate the guesses from the boards
-let guessList: Array<number> = inputData[0].split(',').map(function (x) {
+const guessList: Array<number> = inputData[0].split(',').map(function (x) {
     return parseInt(x, 10);
 });
 
@@ -31,13 +31,10 @@ for (let i = 0; i < boardInputData.length ; i++) {
     }
 }
 
-console.log(boardList[0].length)
-console.log(boardList[0][0].length)
-
 function getIndexes() {
     for (let i = 0; i < guessList.length ; i++) { // loops over the guesses
         let currentGuessList = guessList.slice(0, i + 1) // slice() does NOT include the end element https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
-        console.log(currentGuessList)
+        // console.log(currentGuessList)
         for (let j = 0; j < boardList.length ; j++) { // loops over the list of boards
             for (let k = 0; k < boardList[0].length ; k++) { // loops over the rows in a board
                 if (
@@ -47,7 +44,7 @@ function getIndexes() {
                     && currentGuessList.includes(boardList[j][k][3])
                     && currentGuessList.includes(boardList[j][k][4])
                 ) {
-                    console.log(`found row match on board index: ${j}`)
+                    // console.log(`found row match on board index: ${j}`)
                     return [i, j]
                 }
                 for (let l = 0; l < boardList[0][0].length ; l++) { // loops over the columns in a board
@@ -58,7 +55,7 @@ function getIndexes() {
                         && currentGuessList.includes(boardList[j][3][l])
                         && currentGuessList.includes(boardList[j][4][l])
                     ) {
-                        console.log(`found column match on board index: ${j}`)
+                        // console.log(`found column match on board index: ${j}`)
                         return [i, j]
                     }                
                 }
@@ -67,12 +64,82 @@ function getIndexes() {
     }
 }
 
+getIndexes()!; //https://stackoverflow.com/questions/54496398/typescript-type-string-undefined-is-not-assignable-to-type-string
 let [guessIndex, boardIndex] = getIndexes()!; //https://stackoverflow.com/questions/54496398/typescript-type-string-undefined-is-not-assignable-to-type-string
 
 let answerGuessList: Array<number> = guessList.slice(0, guessIndex + 1)
 let answerBoard: Array<Array<number>> = boardList[boardIndex]
 
 let unmatchedSum: number = 0;
+for (let i = 0; i < answerBoard.length ; i++) {
+    for (let j = 0; j < answerBoard[0].length ; j++) {
+        if (!answerGuessList.includes(answerBoard[i][j])) {
+            unmatchedSum += answerBoard[i][j]
+        }
+    }
+}
+
+console.log(`
+Sum of unmatched numbers: ${unmatchedSum}
+Last guess number that was called: ${guessList[guessIndex]}
+Product of unmatchedSum and last guess: ${unmatchedSum * guessList[guessIndex]}`)
+
+
+
+// PART 2
+
+// We're going to be modifying the board list array, so we want to preserve the original copy with a clone here
+let tmpBoardList = JSON.parse(JSON.stringify(boardList));
+
+let foundBoardCount: number = 0;
+function getLastIndexes() {
+    for (let i = 0; i < guessList.length ; i++) { // loops over the guesses
+        let currentGuessList = guessList.slice(0, i + 1) // slice() does NOT include the end element https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+        for (let j = 0; j < tmpBoardList.length ; j++) { // loops over the list of boards
+            for (let k = 0; k < 5 ; k++) { // loops over the rows in a board
+                if (tmpBoardList[j].length) { // check to make sure the board hasn't been eliminated already
+                    if (
+                        currentGuessList.includes(tmpBoardList[j][k][0])
+                        && currentGuessList.includes(tmpBoardList[j][k][1])
+                        && currentGuessList.includes(tmpBoardList[j][k][2])
+                        && currentGuessList.includes(tmpBoardList[j][k][3])
+                        && currentGuessList.includes(tmpBoardList[j][k][4])
+                    ) {
+                        // console.log(`found row match on board index: ${j}`)
+                        tmpBoardList.splice(j, 1, [])
+                        foundBoardCount++
+                    }
+                }
+                for (let l = 0; l < 5 ; l++) { // loops over the columns in a board
+                    if (tmpBoardList[j].length) { // check to make sure the board hasn't been eliminated already
+                        if (
+                            currentGuessList.includes(tmpBoardList[j][0][l])
+                            && currentGuessList.includes(tmpBoardList[j][1][l])
+                            && currentGuessList.includes(tmpBoardList[j][2][l])
+                            && currentGuessList.includes(tmpBoardList[j][3][l])
+                            && currentGuessList.includes(tmpBoardList[j][4][l])
+                        ) {
+                            // console.log(`found column match on board index: ${j}`)
+                            tmpBoardList.splice(j, 1, [])
+                            foundBoardCount++
+                        }
+                    }
+                }
+            }
+            // On the last board, the above code will make this true and we will return the index here
+            if (tmpBoardList.length == foundBoardCount) {
+                return [i, j]
+            }
+        }
+    }
+}
+
+[guessIndex, boardIndex] = getLastIndexes()!; //https://stackoverflow.com/questions/54496398/typescript-type-string-undefined-is-not-assignable-to-type-string
+
+answerGuessList = guessList.slice(0, guessIndex + 1)
+answerBoard = boardList[boardIndex]
+
+unmatchedSum = 0;
 for (let i = 0; i < answerBoard.length ; i++) {
     for (let j = 0; j < answerBoard[0].length ; j++) {
         if (!answerGuessList.includes(answerBoard[i][j])) {
